@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+	<title>Speed Test</title>
+ 
+</head>
+<body>
+
+
+
+
+
+
+    
+    <body onunload="">
+
+    
+   <div class="container" id="main" style="background-color: white; width: 50%; height: 50%;">
+       <p>Click the button to start test</p>
+
+<button onclick="SpeedTest()">Try It</button>
+
+<p id="demo"></p>
+
+
+<script>
+// //////////////////////////////
+// GET THE LOCATION SCRIPT HERE
+// //////////////////////////////
+
+var x = document.getElementById("demo");
+
+function getLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(showPosition);
+  } else { 
+    x.innerHTML = "Geolocation is not supported by this browser.";
+  }
+}
+
+
+function showPosition(position) {
+  x.innerHTML = "Latitude: " + position.coords.latitude + 
+  "<br>Longitude: " + position.coords.longitude;
+  
+  return x.innerHTML
+}
+
+function SpeedTest(){
+            var userImageLink = 
+            "https://xp5.org/noise_sm.png";
+            var time_start, end_time;
+            // if start time - end time = too fast
+               // use bigger download link
+            userImageLink += '?_time=' + (new Date()).getTime();
+
+            
+            // The size in bytes
+            var downloadSize = 691951;
+            var downloadImgSrc = new Image();
+            var speedInMbps;
+  
+            downloadImgSrc.onload = function () {
+                end_time = new Date().getTime();
+                displaySpeed();
+            };
+            time_start = new Date().getTime();
+            downloadImgSrc.src = userImageLink;
+            document.write("time start: " + time_start);
+            document.write("<br>");
+            
+
+
+
+
+           function displaySpeed(position) {
+
+                var timeDuration = (end_time - time_start) / 1000;
+                var loadedBits = downloadSize * 8;
+                
+                /* Converts a number into string
+                   using toFixed(2) rounding to 2 */
+                var bps = (loadedBits / timeDuration).toFixed(2);
+                var speedInKbps = (bps / 1024).toFixed(2);
+                speedInMbps = (speedInKbps / 1024).toFixed(2);
+
+            
+
+
+
+                // this function does the async callback for lat + lon values
+                function getLocation(callback) {
+                    if (navigator.geolocation) {
+                        var lat_lng = navigator.geolocation.getCurrentPosition(function(position){
+                        console.log(position);
+                        var user_position = {};
+                        user_position.lat = position.coords.latitude; 
+                        user_position.lng = position.coords.longitude; 
+                        callback(user_position);
+                        });
+                    } else {
+                        alert("Geolocation is not supported by this browser.");
+                    }
+                }
+                getLocation(function(lat_lng){
+                console.log(typeof lat_lng);
+                var location = JSON.stringify(lat_lng);
+                
+                const mergedObject = {location, speedInMbps};
+                console.log('merged object');
+                console.log(mergedObject);
+
+                // this part creates the post request to send results back
+                const URL = '/speedtest';
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', URL);
+                xhr.send(JSON.stringify(mergedObject));
+                });
+
+
+
+
+                alert("Your internet connection speed is: \n" 
+                      + bps + " bps\n" + speedInKbps 
+                      + " kbps\n" + speedInMbps + " Mbps\n");
+                return speedInMbps;
+            }
+}
+        </script>
+
+
+
+
+
+
+    </body>
+</html>
+
+
+
+
+
+
+</body>
+</html>
